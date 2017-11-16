@@ -17,7 +17,11 @@ namespace :db do
         stdout = $stdout
         begin
           $stdout = File.open(File::NULL, "w")
-          ActiveRecord::Tasks::DatabaseTasks.load_schema_for(configuration)
+          if ActiveRecord::Tasks::DatabaseTasks.respond_to?(:load_schema)
+            ActiveRecord::Tasks::DatabaseTasks.load_schema(configuration)
+          else
+            ActiveRecord::Tasks::DatabaseTasks.load_schema_for(configuration)
+          end
         ensure
           $stdout = stdout
         end
